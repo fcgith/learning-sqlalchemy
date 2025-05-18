@@ -13,7 +13,7 @@ router = APIRouter()
 @router.post("/", response_model=UserResponse)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create a new user."""
-    db_user = user_service.create_user(db, user)
+    db_user = user_services.create_user(db, user)
     return db_user
 
 
@@ -21,8 +21,10 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
 def login_for_access_token(db: Session = Depends(get_db),
                            form_data: OAuth2PasswordRequestForm = Depends()):
     """Login endpoint to generate a JWT token."""
-    user = user_service.authenticate_user(db, form_data.username, form_data.password)
+    user = user_services.authenticate_user(db, form_data.username, form_data.password)
+
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
+
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}

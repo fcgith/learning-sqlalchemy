@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 
 from app.infrastructure.database import Base
 from app.models.product import ProductResponse
-from app.models.user import UserResponse
+from app.models.user import UserResponse, UserResponsePublic
 
 
 class Review(Base):
@@ -19,7 +19,7 @@ class Review(Base):
     comment = Column(Text)
     created_at = Column(DateTime, default=datetime.now, nullable=False)
     user = relationship("User", back_populates="reviews")
-    product = relationship("Product", back_populates="reviews")
+    product = relationship("Product", back_populates="all_reviews")
 
 
 class ReviewCreate(BaseModel):
@@ -46,7 +46,7 @@ class ReviewResponse(BaseModel):
         from_attributes = True
 
 
-class UserReviewsResponse(UserResponse):
+class UserReviewsResponse(UserResponsePublic):
     reviews: list[ReviewResponse]
     total_reviews: int
     average_rating: float

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.user_services as user_services
 from app.models.review import UserReviewsResponse
-from app.models.user import UserResponse, User
+from app.models.user import UserResponse, User, UserResponsePublic
 from app.services import review_services
 
 router = APIRouter()
@@ -18,9 +18,7 @@ def get_all_users(db: Session = Depends(get_db),
     return users
 
 
-@router.get("/{user_id}",
-            response_model=UserResponse,
-            response_model_exclude={"admin", "email", "phone", "address"})
+@router.get("/{user_id}", response_model=UserResponsePublic)
 def read_user(user_id: int,
               db: Session = Depends(get_db),
               user: User = Depends(get_current_user)):
@@ -28,9 +26,7 @@ def read_user(user_id: int,
     return user_services.get_user_by_id(db, user_id)
 
 
-@router.get("/{user_id}/reviews",
-            response_model=UserReviewsResponse,
-            response_model_exclude={"admin", "email", "phone", "address"})
+@router.get("/{user_id}/reviews", response_model=UserReviewsResponse)
 def get_user_reviews(user_id: int,
                      page: int = Query(1),
                      limit: int = Query(10),

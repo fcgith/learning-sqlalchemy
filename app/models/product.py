@@ -19,9 +19,12 @@ class Product(Base):
     name = Column(String, index=True)
     description = Column(String)
     price = Column(Float)
+
+
     categories = relationship("Category",
                               secondary=product_categories,
                               back_populates="products")
+    all_reviews = relationship("Review", back_populates="product")
 
 
 class ProductCreate(BaseModel):

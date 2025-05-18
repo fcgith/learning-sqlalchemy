@@ -1,6 +1,8 @@
 from typing import Optional
 
 from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy.orm import relationship
+
 from app.infrastructure.database import Base
 from pydantic import BaseModel
 
@@ -15,6 +17,8 @@ class User(Base):
     phone = Column(String, default="")
     address = Column(String, default="")
 
+    reviews = relationship("Review", back_populates="user")
+
 
 class Token(BaseModel):
     access_token: str
@@ -26,21 +30,32 @@ class UserCreate(BaseModel):
     username: str
     password: str
     email: str
-    phone: Optional[str] = None
-    address: Optional[str] = None
     admin: bool = False
+    phone: Optional[str] = ""
+    address: Optional[str] = ""
 
 
 class UserUpdate(BaseModel):
-    phone: Optional[str] = None
-    address: Optional[str] = None
+    email: Optional[str] = ""
+    phone: Optional[str] = ""
+    address: Optional[str] = ""
 
 
 class UserResponse(BaseModel):
     id: int
     username: str
     email: str
+    phone: str
+    address: str
     admin: bool
+
+    class Config:
+        from_attributes = True
+
+
+class UserResponsePublic(BaseModel):
+    id: int
+    username: str
 
     class Config:
         from_attributes = True

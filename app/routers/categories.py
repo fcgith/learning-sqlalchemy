@@ -10,7 +10,7 @@ from app.models.user import User
 router = APIRouter()
 
 
-@router.get("/", response_model=List[CategoryProductsResponse])
+@router.get("/", response_model=List[CategoryResponse])
 def read_categories(db: Session = Depends(get_db),
                     admin: User = Depends(get_current_admin)):
     """Get a list of all categories. (requires authentication)"""
@@ -27,7 +27,7 @@ def create_category(category: CategoryCreate,
     return db_category
 
 
-@router.post("/{category_id}/products/{product_id}", response_model=CategoryResponse)
+@router.post("/{category_id}/products/{product_id}", response_model=CategoryProductsResponse)
 def add_product_to_category(
         category_id: int,
         product_id: int,
@@ -37,7 +37,7 @@ def add_product_to_category(
     return category_service.add_product_to_category(db, category_id, product_id)
 
 
-@router.delete("/{category_id}/products/{product_id}", response_model=CategoryResponse)
+@router.delete("/{category_id}/products/{product_id}", response_model=CategoryProductsResponse)
 def remove_product_from_category(
         category_id: int,
         product_id: int,
@@ -65,7 +65,7 @@ def update_category_name(category: CategoryUpdateName,
     return updated_category
 
 
-@router.get("/{category_id}", response_model=CategoryResponse)
+@router.get("/{category_id}", response_model=CategoryProductsResponse)
 def read_category(category_id: int,
                   db: Session = Depends(get_db),
                   user: User = Depends(get_current_user)):
@@ -74,7 +74,7 @@ def read_category(category_id: int,
     return category
 
 
-@router.delete("/{category_id}", response_model=CategoryResponse)
+@router.delete("/{category_id}", response_model=CategoryProductsResponse)
 def delete_category(category_id: int,
                     db: Session = Depends(get_db),
                     admin: User = Depends(get_current_admin)):
