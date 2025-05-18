@@ -1,10 +1,12 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.product_services as product_service
 from app.models.product import ProductCreate, ProductCategoriesResponse, ProductUpdateName, ProductUpdatePrice
+from app.models.review import ProductReviewsResponse
 from app.models.user import User
+from app.services import review_services
 
 router = APIRouter()
 
@@ -69,3 +71,16 @@ def delete_product(product_id: int,
     """Delete a product. (requires admin authentication)"""
     del_product = product_service.delete_product(db, product_id)
     return del_product
+
+
+@router.get("/{product_id}/reviews", response_model=ProductReviewsResponse)
+def get_product_reviews(product_id: int,
+                        page: int = Query(1),
+                        limit: int = Query(10),
+                        user=Depends(get_current_user),
+                        db=Depends(get_db)):
+    """Retrieve a list of reviews by product ID. (requires authentication)"""
+    product = product_service.get_product_by_id(db, product_id)
+    reviews_response = review_services.get_reviews_by_product(db, product, limit, page)
+
+    return reviews_response

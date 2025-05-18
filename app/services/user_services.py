@@ -14,7 +14,7 @@ def get_all_users(db: Session):
     return users  # No need for a check because admin wouldn't be logged in if there were no users
 
 
-def get_user(db: Session, user_id: int):
+def get_user_by_id(db: Session, user_id: int):
     """Retrieve a user by ID."""
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:

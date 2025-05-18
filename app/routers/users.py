@@ -1,18 +1,20 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from app.dependencies import get_db, get_current_user
-import app.services.user_service as user_service
+from app.dependencies import get_db, get_current_user, get_current_admin
+import app.services.user_services as user_services
+from app.models.review import UserReviewsResponse
 from app.models.user import UserResponse, User
+from app.services import review_services
 
 router = APIRouter()
 
 
 @router.get("/", response_model=List[UserResponse])
 def get_all_users(db: Session = Depends(get_db),
-                  admin: User = Depends(get_current_user)):
+                  admin: User = Depends(get_current_admin)):
     """Get a list of all users (requires admin authentication)."""
-    users = user_service.get_all_users(db)
+    users = user_services.get_all_users(db)
     return users
 
 
@@ -21,4 +23,17 @@ def read_user(user_id: int,
               db: Session = Depends(get_db),
               user: User = Depends(get_current_user)):
     """Retrieve a user by ID (requires authentication)."""
-    return user_service.get_user(db, user_id)
+    return user_services.get_user_by_id(db, user_id)
+
+
+@router.get("/{user_id}/reviews", response_model=UserReviewsResponse)
+def get_user_reviews(user_id: int,
+                     page: int = Query(1),
+                     limit: int = Query(10),
+                     user=Depends(get_current_user),
+                     db=Depends(get_db)):
+    """Retrieve a list of reviews by user ID (requires authentication)."""
+    user = user_services.get_user_by_id(db, user_id)
+    reviews_response = review_services.get_reviews_by_user(db, user, limit, page)
+
+    return reviews_response

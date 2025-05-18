@@ -8,11 +8,11 @@ from app.models.product import Product
 def validate_category_product(db: Session, category_id: int, product_id: int):
     category = db.query(Category).filter(Category.id == category_id).first()
     if not category:
-        raise HTTPException(status_code=404, detail="Category not found")
+        raise HTTPException(status_code=402, detail="Category not found")
 
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=402, detail="Product not found")
 
     return category
 
@@ -20,21 +20,21 @@ def validate_category_product(db: Session, category_id: int, product_id: int):
 def get_all_categories(db: Session):
     categories = db.query(Category).all()
     if categories is None:
-        raise HTTPException(status_code=404, detail="There are no categories in the database")
+        raise HTTPException(status_code=402, detail="There are no categories in the database")
     return categories
 
 
 def get_category_by_id(db: Session, category_id: int):
     category = db.query(Category).filter(Category.id == category_id).first()
     if category is None:
-        raise HTTPException(status_code=404, detail="Category not found")
+        raise HTTPException(status_code=402, detail="Category not found")
     return category
 
 
 def find_category_by_name(db: Session, name: str):
     categories = db.query(Category).filter(Category.name.like(f"%{name}%")).all()
     if categories is None:
-        raise HTTPException(status_code=404, detail="No categories mathing the query found")
+        raise HTTPException(status_code=402, detail="No categories mathing the query found")
     return categories
 
 
@@ -53,7 +53,7 @@ def delete_category(db: Session, category_id: int):
         db.delete(db_category)
         db.commit()
         return db_category
-    raise HTTPException(status_code=404, detail="Category not found")
+    raise HTTPException(status_code=402, detail="Category not found")
 
 
 def update_category_name(db: Session, category_id: int, name: str):

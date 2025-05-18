@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
@@ -28,6 +29,11 @@ class ReviewCreate(BaseModel):
     comment: str
 
 
+class ReviewUpdate(BaseModel):
+    rating: Optional[int] = None
+    comment: Optional[str] = None
+
+
 class ReviewResponse(BaseModel):
     id: int
     user_id: int
@@ -42,6 +48,8 @@ class ReviewResponse(BaseModel):
 
 class UserReviewsResponse(UserResponse):
     reviews: list[ReviewResponse]
+    total_reviews: int
+    average_rating: float
 
     class Config:
         from_attributes = True
@@ -49,9 +57,8 @@ class UserReviewsResponse(UserResponse):
 
 class ProductReviewsResponse(ProductResponse):
     reviews: list[ReviewResponse]
-
-    class Config:
-        from_attributes = True
+    total_reviews: int
+    average_rating: float
 
     class Config:
         from_attributes = True

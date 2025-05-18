@@ -7,21 +7,21 @@ from app.models.product import Product, ProductCreate
 def get_all_products(db: Session):
     products = db.query(Product).all()
     if products is None:
-        raise HTTPException(status_code=404, detail="There are no products in the database")
+        raise HTTPException(status_code=402, detail="There are no products in the database")
     return products
 
 
 def get_product_by_id(db: Session, product_id: int):
     product = db.query(Product).filter(Product.id == product_id).first()
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=402, detail="Product not found")
     return product
 
 
 def find_product_by_name(db: Session, name: str):
     products = db.query(Product).filter(Product.name.like(f"%{name}%")).all()
     if products is None:
-        raise HTTPException(status_code=404, detail="No products mathing the query found")
+        raise HTTPException(status_code=402, detail="No products mathing the query found")
     return products
 
 
@@ -41,7 +41,7 @@ def delete_product(db: Session, product_id: int):
         db.delete(db_product)
         db.commit()
         return db_product
-    raise HTTPException(status_code=404, detail="Product not found")
+    raise HTTPException(status_code=402, detail="Product not found")
 
 
 def update_product_name(db: Session, product_id: int, name: str):
