@@ -3,7 +3,7 @@ from jwt.exceptions import PyJWTError
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 
-SECRET_KEY = "your_secret_key"  # Replace with a secure key in production
+SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 360  # 6 hours
 

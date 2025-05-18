@@ -35,7 +35,7 @@ def create_user(db: Session, user: UserCreate):
         db.refresh(user)
         return user
     except IntegrityError:
-        db.rollback()  # Roll back the transaction to avoid session issues
+        db.rollback()
         raise HTTPException(status_code=400, detail="Username or email already taken")
 
 

@@ -25,7 +25,6 @@ class UserCreate(BaseModel):
     admin: bool = False
 
 
-# Pydantic model for user output (excludes hashed_password)
 class UserOut(BaseModel):
     id: int
     username: str
@@ -33,4 +32,4 @@ class UserOut(BaseModel):
     admin: bool
 
     class Config:
-        from_attributes = True  # Allows conversion from SQLAlchemy model to Pydantic
+        from_attributes = True
