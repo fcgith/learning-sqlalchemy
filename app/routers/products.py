@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
-import app.services.product_service as product_service
+import app.services.product_services as product_service
 from app.models.product import ProductCreate, ProductOut, ProductUpdateName, ProductUpdatePrice
 from app.models.user import User
 
@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=List[ProductOut])
-def create_product(db: Session = Depends(get_db),
+def read_products(db: Session = Depends(get_db),
                    admin: User = Depends(get_current_user)):
     """Get a list of all products. (requires authentication)"""
     products = product_service.get_all_products(db)
@@ -54,7 +54,7 @@ def update_product_price(product: ProductUpdatePrice,
 
 
 @router.get("/{product_id}", response_model=ProductOut)
-def read_product(product_id: int,
+def read_product_by_id(product_id: int,
                  db: Session = Depends(get_db),
                  user: User = Depends(get_current_user)):
     """Retrieve a product by ID. (requires authentication)"""
