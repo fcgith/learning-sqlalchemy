@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[CategoryProductsResponse])
 def read_categories(db: Session = Depends(get_db),
-                    admin: User = Depends(get_current_user)):
+                    admin: User = Depends(get_current_admin)):
     """Get a list of all categories. (requires authentication)"""
     categories = category_service.get_all_categories(db)
     return categories
@@ -29,21 +29,23 @@ def create_category(category: CategoryCreate,
 
 @router.post("/{category_id}/products/{product_id}", response_model=CategoryResponse)
 def add_product_to_category(
-    category_id: int,
-    product_id: int,
-    db: Session = Depends(get_db),
-    admin: User = Depends(get_current_admin)
+        category_id: int,
+        product_id: int,
+        db: Session = Depends(get_db),
+        admin: User = Depends(get_current_admin)
 ):
     return category_service.add_product_to_category(db, category_id, product_id)
 
+
 @router.delete("/{category_id}/products/{product_id}", response_model=CategoryResponse)
 def remove_product_from_category(
-    category_id: int,
-    product_id: int,
-    db: Session = Depends(get_db),
-    admin: User = Depends(get_current_admin)
+        category_id: int,
+        product_id: int,
+        db: Session = Depends(get_db),
+        admin: User = Depends(get_current_admin)
 ):
     return category_service.remove_product_from_category(db, category_id, product_id)
+
 
 @router.get("/search", response_model=List[CategoryResponse])
 def search_category_by_name(query: str,

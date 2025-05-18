@@ -16,6 +16,7 @@ def validate_category_product(db: Session, category_id: int, product_id: int):
 
     return category
 
+
 def get_all_categories(db: Session):
     categories = db.query(Category).all()
     if categories is None:
@@ -39,7 +40,7 @@ def find_category_by_name(db: Session, name: str):
 
 def create_category(db: Session, category: CategoryCreate):
     db_category = Category(name=category.name,
-                         description=category.description)
+                           description=category.description)
     db.add(db_category)
     db.commit()
     db.refresh(db_category)

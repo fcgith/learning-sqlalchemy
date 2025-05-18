@@ -12,6 +12,7 @@ product_categories = Table(
     UniqueConstraint('category_id', 'product_id', name='uix_1')
 )
 
+
 class Product(Base):
     __tablename__ = "products"
     id = Column(Integer, primary_key=True, index=True)
@@ -22,10 +23,12 @@ class Product(Base):
                               secondary=product_categories,
                               back_populates="products")
 
+
 class ProductCreate(BaseModel):
     name: str
     description: str
     price: float
+
 
 class ProductResponse(BaseModel):
     id: int
@@ -36,6 +39,7 @@ class ProductResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ProductCategoriesResponse(ProductResponse):
     categories: List["CategoryResponse"]
 
@@ -43,9 +47,11 @@ class ProductCategoriesResponse(ProductResponse):
         from_attributes = True
         defer_build = True
 
+
 class ProductUpdateName(BaseModel):
     id: int
     name: str
+
 
 class ProductUpdatePrice(BaseModel):
     id: int

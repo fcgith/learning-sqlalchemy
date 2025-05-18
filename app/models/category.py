@@ -15,9 +15,11 @@ class Category(Base):
                             secondary=product_categories,
                             back_populates="categories")
 
+
 class CategoryCreate(BaseModel):
     name: str
     description: str
+
 
 class CategoryResponse(BaseModel):
     id: int
@@ -28,6 +30,7 @@ class CategoryResponse(BaseModel):
         from_attributes = True
         defer_build = True  # Defer model building to handle circular references
 
+
 class CategoryProductsResponse(CategoryResponse):
     products: List["ProductResponse"]
 
@@ -35,9 +38,11 @@ class CategoryProductsResponse(CategoryResponse):
         from_attributes = True
         defer_build = True
 
+
 class CategoryUpdateName(BaseModel):
     id: int
     name: str
+
 
 from app.models.product import ProductCategoriesResponse
 

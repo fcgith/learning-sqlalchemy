@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[ProductCategoriesResponse])
 def read_products(db: Session = Depends(get_db),
-                   admin: User = Depends(get_current_user)):
+                  admin: User = Depends(get_current_user)):
     """Get a list of all products. (requires authentication)"""
     products = product_service.get_all_products(db)
     return products
@@ -55,8 +55,8 @@ def update_product_price(product: ProductUpdatePrice,
 
 @router.get("/{product_id}", response_model=ProductCategoriesResponse)
 def read_product_by_id(product_id: int,
-                 db: Session = Depends(get_db),
-                 user: User = Depends(get_current_user)):
+                       db: Session = Depends(get_db),
+                       user: User = Depends(get_current_user)):
     """Retrieve a product by ID. (requires authentication)"""
     product = product_service.get_product_by_id(db, product_id)
     return product
