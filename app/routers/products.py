@@ -3,13 +3,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.product_services as product_service
-from app.models.product import ProductCreate, ProductOut, ProductUpdateName, ProductUpdatePrice
+from app.models.product import ProductCreate, ProductCategoriesResponse, ProductUpdateName, ProductUpdatePrice
 from app.models.user import User
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[ProductOut])
+@router.get("/", response_model=List[ProductCategoriesResponse])
 def read_products(db: Session = Depends(get_db),
                    admin: User = Depends(get_current_user)):
     """Get a list of all products. (requires authentication)"""
@@ -17,7 +17,7 @@ def read_products(db: Session = Depends(get_db),
     return products
 
 
-@router.post("/", response_model=ProductOut)
+@router.post("/", response_model=ProductCategoriesResponse)
 def create_product(product: ProductCreate,
                    db: Session = Depends(get_db),
                    admin: User = Depends(get_current_admin)):
@@ -26,7 +26,7 @@ def create_product(product: ProductCreate,
     return db_product
 
 
-@router.get("/search", response_model=List[ProductOut])
+@router.get("/search", response_model=List[ProductCategoriesResponse])
 def search_product_by_name(query: str,
                            db: Session = Depends(get_db),
                            user: User = Depends(get_current_user)):
@@ -35,7 +35,7 @@ def search_product_by_name(query: str,
     return products
 
 
-@router.put("/name", response_model=ProductOut)
+@router.put("/name", response_model=ProductCategoriesResponse)
 def update_product_name(product: ProductUpdateName,
                         db: Session = Depends(get_db),
                         admin: User = Depends(get_current_admin)):
@@ -44,7 +44,7 @@ def update_product_name(product: ProductUpdateName,
     return updated_product
 
 
-@router.put("/price", response_model=ProductOut)
+@router.put("/price", response_model=ProductCategoriesResponse)
 def update_product_price(product: ProductUpdatePrice,
                          db: Session = Depends(get_db),
                          admin: User = Depends(get_current_admin)):
@@ -53,7 +53,7 @@ def update_product_price(product: ProductUpdatePrice,
     return updated_product
 
 
-@router.get("/{product_id}", response_model=ProductOut)
+@router.get("/{product_id}", response_model=ProductCategoriesResponse)
 def read_product_by_id(product_id: int,
                  db: Session = Depends(get_db),
                  user: User = Depends(get_current_user)):
@@ -62,7 +62,7 @@ def read_product_by_id(product_id: int,
     return product
 
 
-@router.delete("/{product_id}", response_model=ProductOut)
+@router.delete("/{product_id}", response_model=ProductCategoriesResponse)
 def delete_product(product_id: int,
                    db: Session = Depends(get_db),
                    admin: User = Depends(get_current_admin)):

@@ -3,13 +3,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.category_services as category_service
-from app.models.category import CategoryCreate, CategoryOut, CategoryUpdateName, CategoryOut
+from app.models.category import CategoryCreate, CategoryResponse, CategoryUpdateName, CategoryResponse
 from app.models.user import User
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[CategoryOut])
+@router.get("/", response_model=List[CategoryResponse])
 def read_categories(db: Session = Depends(get_db),
                     admin: User = Depends(get_current_user)):
     """Get a list of all categories. (requires authentication)"""
@@ -17,7 +17,7 @@ def read_categories(db: Session = Depends(get_db),
     return categories
 
 
-@router.post("/", response_model=CategoryOut)
+@router.post("/", response_model=CategoryResponse)
 def create_category(category: CategoryCreate,
                     db: Session = Depends(get_db),
                     admin: User = Depends(get_current_admin)):
@@ -26,7 +26,7 @@ def create_category(category: CategoryCreate,
     return db_category
 
 
-@router.post("/{category_id}/products/{product_id}", response_model=CategoryOut)
+@router.post("/{category_id}/products/{product_id}", response_model=CategoryResponse)
 def add_product_to_category(
     category_id: int,
     product_id: int,
@@ -35,7 +35,7 @@ def add_product_to_category(
 ):
     return category_service.add_product_to_category(db, category_id, product_id)
 
-@router.delete("/{category_id}/products/{product_id}", response_model=CategoryOut)
+@router.delete("/{category_id}/products/{product_id}", response_model=CategoryResponse)
 def remove_product_from_category(
     category_id: int,
     product_id: int,
@@ -44,7 +44,7 @@ def remove_product_from_category(
 ):
     return category_service.remove_product_from_category(db, category_id, product_id)
 
-@router.get("/search", response_model=List[CategoryOut])
+@router.get("/search", response_model=List[CategoryResponse])
 def search_category_by_name(query: str,
                             db: Session = Depends(get_db),
                             user: User = Depends(get_current_user)):
@@ -53,7 +53,7 @@ def search_category_by_name(query: str,
     return categories
 
 
-@router.put("/name", response_model=CategoryOut)
+@router.put("/name", response_model=CategoryResponse)
 def update_category_name(category: CategoryUpdateName,
                          db: Session = Depends(get_db),
                          admin: User = Depends(get_current_admin)):
@@ -62,7 +62,7 @@ def update_category_name(category: CategoryUpdateName,
     return updated_category
 
 
-@router.get("/{category_id}", response_model=CategoryOut)
+@router.get("/{category_id}", response_model=CategoryResponse)
 def read_category(category_id: int,
                   db: Session = Depends(get_db),
                   user: User = Depends(get_current_user)):
@@ -71,7 +71,7 @@ def read_category(category_id: int,
     return category
 
 
-@router.delete("/{category_id}", response_model=CategoryOut)
+@router.delete("/{category_id}", response_model=CategoryResponse)
 def delete_category(category_id: int,
                     db: Session = Depends(get_db),
                     admin: User = Depends(get_current_admin)):

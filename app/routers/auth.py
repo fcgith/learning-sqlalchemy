@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 
 from app.dependencies import get_db
 from app.infrastructure.auth import create_access_token
-from app.models.user import UserOut, UserCreate, Token
+from app.models.user import UserResponse, UserCreate, Token
 from app.services import user_service
 
 router = APIRouter()
 
 
-@router.post("/", response_model=UserOut)
+@router.post("/", response_model=UserResponse)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     """Create a new user."""
     db_user = user_service.create_user(db, user)

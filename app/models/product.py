@@ -27,7 +27,7 @@ class ProductCreate(BaseModel):
     description: str
     price: float
 
-class ProductOutBase(BaseModel):
+class ProductResponse(BaseModel):
     id: int
     name: str
     description: str
@@ -36,8 +36,8 @@ class ProductOutBase(BaseModel):
     class Config:
         from_attributes = True
 
-class ProductOut(ProductOutBase):
-    categories: List["CategoryOutBase"]
+class ProductCategoriesResponse(ProductResponse):
+    categories: List["CategoryResponse"]
 
     class Config:
         from_attributes = True

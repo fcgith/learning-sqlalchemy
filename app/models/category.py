@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
-from app.models.product import product_categories, ProductOutBase
+from app.models.product import product_categories, ProductCategoriesResponse
 
 
 class Category(Base):
@@ -19,7 +19,7 @@ class CategoryCreate(BaseModel):
     name: str
     description: str
 
-class CategoryOutBase(BaseModel):
+class CategoryResponse(BaseModel):
     id: int
     name: str
     description: str
@@ -28,8 +28,8 @@ class CategoryOutBase(BaseModel):
         from_attributes = True
         defer_build = True  # Defer model building to handle circular references
 
-class CategoryOut(CategoryOutBase):
-    products: List["ProductOutBase"]
+class CategoryProductsResponse(CategoryResponse):
+    products: List["ProductResponse"]
 
     class Config:
         from_attributes = True
@@ -39,7 +39,7 @@ class CategoryUpdateName(BaseModel):
     id: int
     name: str
 
-from app.models.product import ProductOut
+from app.models.product import ProductCategoriesResponse
 
-CategoryOut.model_rebuild()
-ProductOut.model_rebuild()
+CategoryResponse.model_rebuild()
+ProductCategoriesResponse.model_rebuild()

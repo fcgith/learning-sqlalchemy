@@ -25,7 +25,7 @@ class UserCreate(BaseModel):
     admin: bool = False
 
 
-class UserOut(BaseModel):
+class UserResponse(BaseModel):
     id: int
     username: str
     email: str
