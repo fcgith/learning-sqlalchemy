@@ -3,13 +3,14 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.category_services as category_service
-from app.models.category import CategoryCreate, CategoryResponse, CategoryUpdateName, CategoryResponse
+from app.models.category import CategoryCreate, CategoryResponse, CategoryUpdateName, CategoryResponse, \
+    CategoryProductsResponse
 from app.models.user import User
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[CategoryResponse])
+@router.get("/", response_model=List[CategoryProductsResponse])
 def read_categories(db: Session = Depends(get_db),
                     admin: User = Depends(get_current_user)):
     """Get a list of all categories. (requires authentication)"""

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
-from app.models.product import product_categories, ProductCategoriesResponse
+from app.models.product import product_categories, ProductCategoriesResponse, ProductResponse
 
 
 class Category(Base):
@@ -41,5 +41,5 @@ class CategoryUpdateName(BaseModel):
 
 from app.models.product import ProductCategoriesResponse
 
-CategoryResponse.model_rebuild()
+CategoryProductsResponse.model_rebuild()
 ProductCategoriesResponse.model_rebuild()
