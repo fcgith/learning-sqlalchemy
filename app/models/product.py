@@ -18,14 +18,16 @@ class Product(Base):
     name = Column(String, index=True)
     description = Column(String)
     price = Column(Float)
-    categories = relationship("Category", secondary=product_categories, back_populates="products")
+    categories = relationship("Category",
+                              secondary=product_categories,
+                              back_populates="products")
 
 class ProductCreate(BaseModel):
     name: str
     description: str
     price: float
 
-class ProductBaseOut(BaseModel):
+class ProductOutBase(BaseModel):
     id: int
     name: str
     description: str
@@ -34,8 +36,8 @@ class ProductBaseOut(BaseModel):
     class Config:
         from_attributes = True
 
-class ProductOut(ProductBaseOut):
-    categories: List["CategoryBaseOut"]
+class ProductOut(ProductOutBase):
+    categories: List["CategoryOutBase"]
 
     class Config:
         from_attributes = True
