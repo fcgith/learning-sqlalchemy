@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, Text, DateTime
 from sqlalchemy.orm import relationship
 
 from app.infrastructure.database import Base
+from app.models.product import ProductResponse
 from app.models.user import UserResponse
 
 
@@ -37,6 +38,9 @@ class ReviewResponse(BaseModel):
         from_attributes = True
 
 class UserReviewsResponse(UserResponse):
+    reviews: list[ReviewResponse]
+
+class ProductReviewsResponse(ProductResponse):
     reviews: list[ReviewResponse]
 
     class Config:
