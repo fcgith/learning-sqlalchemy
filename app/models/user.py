@@ -17,7 +17,8 @@ class User(Base):
     phone = Column(String, default="")
     address = Column(String, default="")
 
-    reviews = relationship("Review", back_populates="user")
+    reviews = relationship("Review", back_populates="user", cascade="all,delete,delete-orphan")
+    orders = relationship("Order", back_populates="user", cascade="all,delete,delete-orphan")
 
 
 class Token(BaseModel):

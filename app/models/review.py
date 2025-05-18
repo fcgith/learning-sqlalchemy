@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from app.infrastructure.database import Base
@@ -13,11 +13,12 @@ from app.models.user import UserResponse, UserResponsePublic
 class Review(Base):
     __tablename__ = "reviews"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    rating = Column(Integer, nullable=False)
-    comment = Column(Text)
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False, index=True)
+    rating = Column(Integer, nullable=False, index=True)
+    comment = Column(Text, default="")
+    created_at = Column(DateTime, default=datetime.now())
+
     user = relationship("User", back_populates="reviews")
     product = relationship("Product", back_populates="all_reviews")
 

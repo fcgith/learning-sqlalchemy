@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
 from app.models.product import product_categories, ProductCategoriesResponse, ProductResponse
@@ -11,8 +11,10 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(String, default="")
+    discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
 
 
+    discount = relationship("Discount", back_populates="categories")
     products = relationship("Product",
                             secondary=product_categories,
                             back_populates="categories")
