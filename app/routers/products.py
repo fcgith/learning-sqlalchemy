@@ -29,7 +29,7 @@ def create_product(product: ProductCreate,
 
 
 @router.get("/search", response_model=List[ProductCategoriesResponse])
-def search_product_by_name(query: str,
+def search_product_by_name(query: str = Query(min_length=3, max_length=50, alias="q"),
                            db: Session = Depends(get_db),
                            user: User = Depends(get_current_user)):
     """Retrieve a list of product with names that match the query. (requires authentication)"""
@@ -79,7 +79,9 @@ def get_product_reviews(product_id: int,
                         limit: int = Query(10),
                         user=Depends(get_current_user),
                         db=Depends(get_db)):
-    """Retrieve a list of reviews by product ID. (requires authentication)"""
+    """
+    Retrieve product data with a list of reviews by product ID with pagination. (requires authentication)
+    """
     product = product_service.get_product_by_id(db, product_id)
     reviews_response = review_services.get_reviews_by_product(db, product, limit, page)
 

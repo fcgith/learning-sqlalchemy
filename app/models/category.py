@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
@@ -10,7 +10,7 @@ class Category(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    description = Column(String)
+    description = Column(String, default="")
     products = relationship("Product",
                             secondary=product_categories,
                             back_populates="categories")
@@ -19,6 +19,11 @@ class Category(Base):
 class CategoryCreate(BaseModel):
     name: str
     description: str
+
+
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 
 class CategoryResponse(BaseModel):

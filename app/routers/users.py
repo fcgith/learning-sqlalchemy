@@ -18,7 +18,9 @@ def get_all_users(db: Session = Depends(get_db),
     return users
 
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("/{user_id}",
+            response_model=UserResponse,
+            response_model_exclude={"admin", "email", "phone", "address"})
 def read_user(user_id: int,
               db: Session = Depends(get_db),
               user: User = Depends(get_current_user)):
@@ -26,13 +28,17 @@ def read_user(user_id: int,
     return user_services.get_user_by_id(db, user_id)
 
 
-@router.get("/{user_id}/reviews", response_model=UserReviewsResponse)
+@router.get("/{user_id}/reviews",
+            response_model=UserReviewsResponse,
+            response_model_exclude={"admin", "email", "phone", "address"})
 def get_user_reviews(user_id: int,
                      page: int = Query(1),
                      limit: int = Query(10),
                      user=Depends(get_current_user),
                      db=Depends(get_db)):
-    """Retrieve a list of reviews by user ID (requires authentication)."""
+    """
+    Retrieve user data and a list of reviews by user ID with pagination (requires authentication).
+    """
     user = user_services.get_user_by_id(db, user_id)
     reviews_response = review_services.get_reviews_by_user(db, user, limit, page)
 
