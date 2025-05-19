@@ -106,7 +106,14 @@ def get_discount_categories(discount_id: int,
 
 @router.get("/{discount_id}/categories-with-products", response_model=List[CategoryProductsResponse])
 def get_discount_categories_with_products(discount_id: int,
-                            db: Session = Depends(get_db),
-                            user: User = Depends(get_current_user)):
+                                          db: Session = Depends(get_db),
+                                          user: User = Depends(get_current_user)):
     """Get categories and the products in them with this discount"""
     return discount_services.get_discounted_categories(db, discount_id)
+
+
+@router.get("/example", response_model=ExampleResponse)
+def example_function(db: Session = Depends(get_db),
+                     user: User = Depends(get_current_user)):
+    """Example function docstring"""
+    return example_function2()

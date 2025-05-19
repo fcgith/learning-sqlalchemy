@@ -48,6 +48,9 @@ class SalesResponse(BaseModel):
     total_price: float
     date: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class ItemSalesResponse(BaseModel):
     id: int
@@ -57,6 +60,9 @@ class ItemSalesResponse(BaseModel):
     discount: float
     unit_price: float
     total_price: float
+
+    class Config:
+        from_attributes = True
 
 
 class SalesDetailedResponse(SalesResponse):
