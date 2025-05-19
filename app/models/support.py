@@ -23,7 +23,7 @@ class SupportTicket(Base):
     subject_id = Column(Integer, ForeignKey("support_subjects.id"), nullable=False)
     message = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    status = Column(String, default="waiting")
+    status = Column(String, default="open", nullable=False, index=True, comment="open, closed, pending")
     resolved_at = Column(DateTime, default=None, nullable=True)  # Adjusted for clarity
     assignee = Column(Integer, ForeignKey("users.id"), nullable=True)  # Nullable for unassigned tickets
 
@@ -51,17 +51,11 @@ class SupportSubjectCreate(BaseModel):
 
 
 class SupportTicketCreate(BaseModel):
-    subject_id: str
+    subject_id: int
     message: str
 
 
 class SupportMessagesCreate(BaseModel):
-    ticket_id: int
-    message: str
-    admin_response: bool = False
-
-
-class SupportAdminMessageCreate(BaseModel):
     ticket_id: int
     message: str
 
@@ -71,6 +65,11 @@ class SupportTicketUpdate(BaseModel):
     status: Optional[str] = None
     resolved_at: Optional[datetime] = None
     assignee: Optional[int] = None
+
+
+class SupportSubjectUpdate(BaseModel):
+    name: Optional[str] = None
+    priority: Optional[int] = None
 
 
 class SupportTicketResponse(BaseModel):
