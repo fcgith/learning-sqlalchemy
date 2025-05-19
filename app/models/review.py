@@ -24,7 +24,6 @@ class Review(Base):
 
 
 class ReviewCreate(BaseModel):
-    user_id: int
     product_id: int
     rating: int
     comment: str

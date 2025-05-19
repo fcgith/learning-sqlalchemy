@@ -7,6 +7,8 @@ from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
 from pydantic import BaseModel
 
+from app.models.support import SupportTicket
+
 
 class User(Base):
     __tablename__ = "users"
@@ -20,7 +22,6 @@ class User(Base):
     address = Column(String, default="")
     created_at = Column(DateTime, default=datetime.now)
     last_login = Column(DateTime, default=datetime.now)
-
     loyalty_points = Column(Integer, default=0)
     lifetime_points = Column(Integer, default=0)
     blacklisted = Column(Boolean, default=False)
@@ -30,9 +31,9 @@ class User(Base):
     reviews = relationship("Review", back_populates="user", cascade="all,delete,delete-orphan")
     orders = relationship("Order", back_populates="user", cascade="all,delete,delete-orphan")
     sales = relationship("Sales", back_populates="user", cascade="all,delete,delete-orphan")
-    tickets = relationship("SupportTicket", back_populates="user", cascade="all,delete,delete-orphan")
-    ticket_messages = relationship("SupportMessages", back_populates="user", cascade="all,delete,delete-orphan")
-    agent = relationship("SupportTicket", back_populates="support_agent", cascade="all,delete,delete-orphan")
+    tickets = relationship("SupportTicket",back_populates="user",foreign_keys=[SupportTicket.user_id])
+    assigned_tickets = relationship("SupportTicket",back_populates="support_agent",foreign_keys=[SupportTicket.assignee])
+    ticket_messages = relationship("SupportMessages",back_populates="user",cascade="all,delete,delete-orphan")
 
 
 class Token(BaseModel):

@@ -8,23 +8,6 @@ from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
 
 
-class SupportTicket(Base):
-    __tablename__ = "support_tickets"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
-    subject_id = Column(Integer, ForeignKey("support_subjects"), nullable=False)
-    message = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.now)
-    status = Column(String, default="waiting")
-    resolved_at = Column(DateTime, default=None)
-    assignee = Column(Integer, ForeignKey("users.id"), default=None)
-
-    user = relationship("User", back_populates="tickets")
-    support_agent = relationship("User", back_populates="agent")
-    subject = relationship("SupportSubject", back_populates="tickets")
-    messages = relationship("SupportMessages", back_populates="ticket")
-
-
 class SupportSubject(Base):
     __tablename__ = "support_subjects"
     id = Column(Integer, primary_key=True, index=True)
@@ -33,6 +16,21 @@ class SupportSubject(Base):
 
     tickets = relationship("SupportTicket", back_populates="subject")
 
+class SupportTicket(Base):
+    __tablename__ = "support_tickets"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    subject_id = Column(Integer, ForeignKey("support_subjects.id"), nullable=False)
+    message = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.now)
+    status = Column(String, default="waiting")
+    resolved_at = Column(DateTime, default=None, nullable=True)  # Adjusted for clarity
+    assignee = Column(Integer, ForeignKey("users.id"), nullable=True)  # Nullable for unassigned tickets
+
+    user = relationship("User", back_populates="tickets", foreign_keys=[user_id])
+    support_agent = relationship("User", back_populates="assigned_tickets", foreign_keys=[assignee])
+    subject = relationship("SupportSubject", back_populates="tickets")
+    messages = relationship("SupportMessages", back_populates="ticket")
 
 class SupportMessages(Base):
     __tablename__ = "support_messages"

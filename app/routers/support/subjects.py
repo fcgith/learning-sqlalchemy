@@ -6,7 +6,7 @@ from app.models.user import User
 from app.dependencies import get_db, get_current_user, get_current_admin
 from app.models.support import SupportSubjectResponse, SupportSubjectCreate
 
-router = APIRouter(prefix="/support-subjects", tags=["Support Subjects"])
+router = APIRouter()
 
 
 @router.post("/", response_model=SupportSubjectResponse)

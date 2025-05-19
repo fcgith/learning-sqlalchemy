@@ -49,8 +49,6 @@ class OrderProductCreate(BaseModel):
 
 
 class OrderCreate(BaseModel):
-    user_id: int
-    status: int = OrderStatus.PENDING
     order_products: Optional[List["OrderProductCreate"]] = None
 
 

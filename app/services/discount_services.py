@@ -27,8 +27,7 @@ def create_discount(db: Session, discount_data: DiscountCreate):
     discount = Discount(name=discount_data.name,
                         description=discount_data.description,
                         percentage=discount_data.percentage,
-                        min_order_value=discount_data.min_order_value,
-                        stackable=discount_data.stackable)
+                        min_order_value=discount_data.min_order_value)
 
     db.add(discount)
     db.commit()

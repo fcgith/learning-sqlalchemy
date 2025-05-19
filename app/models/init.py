@@ -7,7 +7,8 @@ import app.models.category
 import app.models.review
 import app.models.order as order
 import app.models.sales
-
+import app.models.sales
+import app.models.support
 
 
 order.OrderResponse.model_rebuild()
