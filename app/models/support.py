@@ -46,30 +46,24 @@ class SupportMessages(Base):
 
 
 class SupportSubjectCreate(BaseModel):
-    id: str
     name: str
     priority: int
 
 
-
 class SupportTicketCreate(BaseModel):
-    user_id: int
     subject_id: str
     message: str
 
 
 class SupportMessagesCreate(BaseModel):
     ticket_id: int
-    user_id: int
     message: str
     admin_response: bool = False
 
 
 class SupportAdminMessageCreate(BaseModel):
     ticket_id: int
-    user_id: int
     message: str
-    admin_response: bool = True
 
 
 class SupportTicketUpdate(BaseModel):
