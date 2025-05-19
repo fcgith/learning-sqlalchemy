@@ -47,8 +47,6 @@ def update_discount(db: Session, discount_id: int, discount_data: DiscountUpdate
         discount.percentage = discount_data.percentage
     if discount_data.min_order_value is not None:
         discount.min_order_value = discount_data.min_order_value
-    if discount_data.stackable is not None:
-        discount.stackable = discount_data.stackable
 
     db.commit()
     db.refresh(discount)
