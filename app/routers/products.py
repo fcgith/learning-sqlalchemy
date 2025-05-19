@@ -3,10 +3,12 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.product_services as product_service
+from app.models.discount import DiscountResponse
 from app.models.product import ProductCreate, ProductCategoriesResponse, ProductUpdateName, ProductUpdatePrice
 from app.models.review import ProductReviewsResponse
 from app.models.user import User
 from app.services import review_services
+import app.services.discount_services as disconut_services
 
 router = APIRouter()
 
@@ -86,3 +88,11 @@ def get_product_reviews(product_id: int,
     reviews_response = review_services.get_reviews_by_product(db, product, limit, page)
 
     return reviews_response
+
+
+@router.get("/{product_id}/discount", response_model=DiscountResponse)
+def get_product_discount(product_id: int,
+                         db: Session = Depends(get_db),
+                         user: User = Depends(get_current_user)):
+    """Get discount applied to a product"""
+    disconut_services.get_product_discount(db, product_id)

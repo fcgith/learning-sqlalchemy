@@ -1,8 +1,9 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, UniqueConstraint, Table
 from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
+from app.models.discount import DiscountResponse
 
 product_categories = Table(
     'product_categories',
@@ -21,7 +22,6 @@ class Product(Base):
     price = Column(Float)
     discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
 
-
     categories = relationship("Category", secondary=product_categories, back_populates="products")
     discount = relationship("Discount", back_populates="products")
     all_reviews = relationship("Review", back_populates="product")
@@ -39,6 +39,7 @@ class ProductResponse(BaseModel):
     name: str
     description: str
     price: float
+    discount: Optional["DiscountResponse"] = None
 
     class Config:
         from_attributes = True

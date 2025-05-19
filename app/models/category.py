@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.infrastructure.database import Base
+from app.models.discount import DiscountResponse
 from app.models.product import product_categories, ProductCategoriesResponse, ProductResponse
 
 
@@ -12,7 +13,6 @@ class Category(Base):
     name = Column(String, index=True)
     description = Column(String, default="")
     discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
-
 
     discount = relationship("Discount", back_populates="categories")
     products = relationship("Product",
@@ -34,6 +34,7 @@ class CategoryResponse(BaseModel):
     id: int
     name: str
     description: str
+    discount: Optional["DiscountResponse"] = None
 
     class Config:
         from_attributes = True

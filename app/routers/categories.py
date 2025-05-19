@@ -5,7 +5,9 @@ from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.category_services as category_service
 from app.models.category import CategoryCreate, CategoryResponse, CategoryUpdateName, CategoryResponse, \
     CategoryProductsResponse
+from app.models.discount import DiscountResponse
 from app.models.user import User
+from app.services import discount_services
 
 router = APIRouter()
 
@@ -81,3 +83,11 @@ def delete_category(category_id: int,
     """Delete a category. (requires admin authentication)"""
     del_category = category_service.delete_category(db, category_id)
     return del_category
+
+
+@router.get("/{category_id}/discount", response_model=DiscountResponse)
+def get_category_discount(category_id: int,
+                          db: Session = Depends(get_db),
+                          user: User = Depends(get_current_user)):
+    """Get discount applied to a category"""
+    return discount_services.get_category_discount(db, category_id)
