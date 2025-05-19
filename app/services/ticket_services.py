@@ -21,7 +21,7 @@ def get_all_tickets(db: Session):
 def get_ticket_by_id(db: Session, ticket_id: int):
     ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id).first()
     if not ticket:
-        raise e.no_resource("Ticket not found")
+        raise HTTPException(status_code=404, detail="Ticket not found")
     return ticket
 
 
@@ -32,7 +32,7 @@ def get_my_ticket(db: Session, user: User):
 def get_tickets_by_assignee(db: Session, assignee_id: int):
     assignee = db.query(SupportTicket).filter(SupportTicket.assignee == assignee_id).all()
     if not assignee:
-        raise e.no_resource("Assignee not found")
+        raise HTTPException(status_code=404, detail="Assignee not found")
     tickets = []
     for ticket in assignee:
         tickets.append(ticket)
@@ -56,7 +56,7 @@ def assign_support_ticket(db: Session, ticket_id: int, assignee_id: int):
 def assign_ticket(db, ticket_id, assignee_id):
     ticket = db.query(SupportTicket).filter(SupportTicket.id == ticket_id).first()
     if not ticket:
-        raise e.no_resource("Ticket not found")
+        raise HTTPException(status_code=404, detail="Ticket not found")
     ticket.assignee = assignee_id
     db.commit()
     db.refresh(ticket)
@@ -86,9 +86,9 @@ def delete_ticket(db: Session, ticket_id: int):
     return True
 
 
-def create_support_message(db: Session, message: SupportMessagesCreate, user):
+def create_support_message(db: Session, ticket_id:int, message: SupportMessagesCreate, user):
     ticket = get_ticket_by_id(db, message.ticket_id)
-    message = SupportMessages(ticket_id=message.ticket_id, message=message.message, user_id=user.id)
+    message = SupportMessages(ticket_id=ticket_id, message=message.message, user_id=user.id)
     if user.admin:
         message.admin_response = True
     ticket.messages.append(message)
@@ -100,5 +100,5 @@ def create_support_message(db: Session, message: SupportMessagesCreate, user):
 def get_support_messages(db: Session, ticket_id: int, user: User):
     ticket = get_ticket_by_id(db, ticket_id)
     if ticket.user_id != user.id:
-        raise e.not_authorized("")
+        raise HTTPException(status_code=403, detail="Not authorized")
     return ticket.messages

@@ -23,6 +23,8 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     user = db.query(User).filter(User.username == username).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    if user.blacklisted and not user.admin:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Your profile has been blacklisted.")
     return user
 
 

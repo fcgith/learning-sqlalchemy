@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.user_services as user_services
 from app.models.review import UserReviewsResponse
-from app.models.user import UserResponse, User, UserResponsePublic
+from app.models.user import UserResponse, User, UserResponsePublic, UserUpdate
 from app.services import review_services
 
 router = APIRouter()
@@ -39,3 +39,11 @@ def get_user_reviews(user_id: int,
     reviews_response = review_services.get_reviews_by_user(db, user, limit, page)
 
     return reviews_response
+
+@router.patch("/{user_id}/details", response_model=UserResponse)
+def update_user_details(user_id: int,
+                        user_update: UserUpdate,
+                        db: Session = Depends(get_db),
+                        user: User = Depends(get_current_user)):
+    """Update a user's details (requires authentication)."""
+    return user_services.update_user_details(db, user_id, user_update)

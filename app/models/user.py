@@ -13,13 +13,13 @@ from app.models.support import SupportTicket
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    email = Column(String, unique=True, index=True)
+    username = Column(String(50), unique=True, index=True)
+    hashed_password = Column(String(120))
+    email = Column(String(50), unique=True, index=True)
     admin = Column(Boolean, default=False)
-    phone = Column(String, default="")
-    country = Column(String, default="USA", nullable=False)
-    address = Column(String, default="")
+    phone = Column(String(50), default="")
+    country = Column(String(50), default="USA", nullable=False)
+    address = Column(String(50), default="")
     created_at = Column(DateTime, default=datetime.now)
     last_login = Column(DateTime, default=datetime.now)
     loyalty_points = Column(Integer, default=0)
@@ -54,9 +54,9 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[str] = ""
-    phone: Optional[str] = ""
-    address: Optional[str] = ""
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
     country: Optional[str] = None
 
 

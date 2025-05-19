@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
+from sqlalchemy import or_, and_
 from app import config
 from app.config import LOW_PRODUCT_INVENTORY_THRESHOLD
 from app.models.product import Product, ProductCreate, ProductUpdate

@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from app.models.user import User, UserCreate
+from app.models.user import User, UserCreate, UserUpdate
 from passlib.context import CryptContext
 
 # Password hashing context
@@ -45,3 +45,16 @@ def authenticate_user(db: Session, username: str, password: str):
     if user and pwd_context.verify(password, user.hashed_password):
         return user
     return None
+
+
+def update_user_details(db: Session, user_id: int, user_update: UserUpdate):
+    user = get_user_by_id(db, user_id)
+
+    if user_update.email is not None:
+        user.email = user_update.email
+    if user_update.admin is not None:
+        user.admin = user_update.admin
+
+    db.commit()
+    db.refresh(user)
+    return user

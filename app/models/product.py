@@ -17,8 +17,8 @@ product_categories = Table(
 class Product(Base):
     __tablename__ = "products"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String)
+    name = Column(String(255), index=True)
+    description = Column(String(255))
     price = Column(Float)
     discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
     stock = Column(Integer, default=0, nullable=False)

@@ -9,8 +9,8 @@ from pydantic import BaseModel
 class Discount(Base):
     __tablename__ = "discounts"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String, default="")
+    name = Column(String(50), index=True)
+    description = Column(String(255), default="")
     percentage = Column(Float, default=0, nullable=False)
     min_order_value = Column(Integer, default=0)
 

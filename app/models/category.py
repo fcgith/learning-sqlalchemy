@@ -10,8 +10,8 @@ from app.models.product import product_categories, ProductCategoriesResponse, Pr
 class Category(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String, default="")
+    name = Column(String(255), index=True)
+    description = Column(String(255), default="")
     discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
 
     discount = relationship("Discount", back_populates="categories")

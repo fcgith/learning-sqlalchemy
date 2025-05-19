@@ -11,7 +11,7 @@ from app.infrastructure.database import Base
 class SupportSubject(Base):
     __tablename__ = "support_subjects"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
     priority = Column(Integer, default=1, nullable=False)
 
     tickets = relationship("SupportTicket", back_populates="subject")
@@ -23,7 +23,7 @@ class SupportTicket(Base):
     subject_id = Column(Integer, ForeignKey("support_subjects.id"), nullable=False)
     message = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
-    status = Column(String, default="open", nullable=False, index=True, comment="open, closed, pending")
+    status = Column(String(255), default="open", nullable=False, index=True, comment="open, closed, pending")
     resolved_at = Column(DateTime, default=None, nullable=True)  # Adjusted for clarity
     assignee = Column(Integer, ForeignKey("users.id"), nullable=True)  # Nullable for unassigned tickets
 

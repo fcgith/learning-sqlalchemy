@@ -29,7 +29,8 @@ def get_support_subjects(db: Session = Depends(get_db),
 
 
 @router.get("/subjects/{subject_id}", response_model=SupportSubjectResponse)
-def get_support_subject(subject_id: int, db: Session = Depends(get_db),
+def get_support_subject(subject_id: int,
+                        db: Session = Depends(get_db),
                         user: User = Depends(get_current_user)):
     """Retrieve a support subject by ID"""
     return support_services.get_support_subject_by_id(db, subject_id)
@@ -132,8 +133,8 @@ def create_support_message(ticket_id: int,
                            message: SupportMessagesCreate,
                            db: Session = Depends(get_db),
                            user: User = Depends(get_current_user)):
-    """Create a new message in a support ticket"""# Set based on user role
-    return ticket_services.create_support_message(db, message, user)
+    """Create a new message in a support ticket"""
+    return ticket_services.create_support_message(db, ticket_id, message, user)
 
 
 @router.get("/{ticket_id}/messages/", response_model=List[SupportMessagesResponse])
