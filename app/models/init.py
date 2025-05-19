@@ -5,4 +5,9 @@ import app.models.discount
 import app.models.product
 import app.models.category
 import app.models.review
-import app.models.order
+import app.models.order as order
+
+
+
+order.OrderResponse.model_rebuild()
+order.OrderProductUpdate.model_rebuild()

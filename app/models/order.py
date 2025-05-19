@@ -51,11 +51,15 @@ class OrderProductCreate(BaseModel):
 class OrderCreate(BaseModel):
     user_id: int
     status: int = OrderStatus.PENDING
-    order_products: Optional[List[OrderProductCreate]] = None
+    order_products: Optional[List["OrderProductCreate"]] = None
+
+
+class OrderProductUpdate(BaseModel):
+    quantity: int = 1
 
 
 class OrderUpdate(BaseModel):
-    new_products: Optional[List[OrderProductCreate]] = None
+    new_products: Optional[List["OrderProductCreate"]] = None
     remove_products: Optional[List[int]] = None
     status: Optional[int] = None
     order_discount: Optional[int] = None
@@ -65,7 +69,7 @@ class OrderProductResponse(BaseModel):
     product_id: int
     quantity: int
     total_price: float
-    discount_id: Optional[int]
+    discount: Optional["DiscountResponse"] = None
 
     class Config:
         from_attributes = True
