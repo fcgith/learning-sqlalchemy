@@ -146,7 +146,10 @@ def add_order_product(db: Session, order_id: int, opc: OrderProductCreate, user:
     if product.discount:
         cost -= product.discount.percentage * cost
 
-    order_product = order.order_products.filter(OrderProduct.product_id == opc.product_id).first()
+    order_product = db.query(OrderProduct).filter(
+        OrderProduct.order_id == order_id,
+        OrderProduct.product_id == opc.product_id
+    ).first()
     if not order_product:
         OrderProduct(product_id=product.id, quantity=opc.quantity, total_price=cost)
         order.order_products.append(order_product)
