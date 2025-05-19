@@ -6,6 +6,7 @@ import app.models.product
 import app.models.category
 import app.models.review
 import app.models.order as order
+import app.models.sales
 
 
 

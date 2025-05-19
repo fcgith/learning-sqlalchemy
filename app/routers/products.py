@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user, get_current_admin
 import app.services.product_services as product_service
 from app.models.discount import DiscountResponse
-from app.models.product import ProductCreate, ProductCategoriesResponse, ProductUpdateName, ProductUpdatePrice
+from app.models.product import ProductCreate, ProductCategoriesResponse, ProductUpdate, ProductResponse
 from app.models.review import ProductReviewsResponse
 from app.models.user import User
 from app.services import review_services
@@ -39,22 +39,13 @@ def search_product_by_name(query: str = Query(min_length=3, max_length=50, alias
     return products
 
 
-@router.put("/name", response_model=ProductCategoriesResponse)
-def update_product_name(product: ProductUpdateName,
-                        db: Session = Depends(get_db),
-                        admin: User = Depends(get_current_admin)):
+@router.put("/{product_id}", response_model=ProductCategoriesResponse)
+def update_product(product_id: int,
+                   product: ProductUpdate,
+                   db: Session = Depends(get_db),
+                   admin: User = Depends(get_current_admin)):
     """Update the name of a product. (requires admin authentication)"""
-    updated_product = product_service.update_product_name(db, product.id, product.name)
-    return updated_product
-
-
-@router.put("/price", response_model=ProductCategoriesResponse)
-def update_product_price(product: ProductUpdatePrice,
-                         db: Session = Depends(get_db),
-                         admin: User = Depends(get_current_admin)):
-    """Update the price of a product. (requires admin authentication)"""
-    updated_product = product_service.update_product_price(db, product.id, product.price)
-    return updated_product
+    return product_service.update_product(db, product_id, product)
 
 
 @router.get("/{product_id}", response_model=ProductCategoriesResponse)
@@ -96,3 +87,39 @@ def get_product_discount(product_id: int,
                          user: User = Depends(get_current_user)):
     """Get discount applied to a product"""
     disconut_services.get_product_discount(db, product_id)
+
+
+@router.get("/{product_id}/inventory", response_model=dict)
+def get_product_inventory(product_id: int,
+                          db: Session = Depends(get_db),
+                          admin: User = Depends(get_current_admin)):
+    """Get stock of a product. (requires admin authentication)"""
+    product = product_service.get_product_by_id(db, product_id)
+    return {"id": product.id, "stock": product.stock}
+
+
+@router.put("/{product_id}/inventory", response_model=ProductResponse)
+def update_low_product_inventory_threshold(product_id: int,
+                                           stock: int = Query(..., alias="s"),
+                                           db: Session = Depends(get_db),
+                                           admin: User = Depends(get_current_admin)):
+    """Get stock of a product. (requires admin authentication)"""
+    product = product_service.get_product_by_id(db, product_id)
+    product.low_stock_threshold = stock; db.commit(); db.refresh(product)
+    return product
+
+
+@router.put("/{product_id}/stock", response_model=ProductResponse)
+def add_product_inventory(product_id: int,
+                          stock: int = Query(..., alias="s"),
+                          db: Session = Depends(get_db),
+                          admin: User = Depends(get_current_admin)):
+    """Add stock of a product. (requires admin authentication)"""
+    return product_service.add_product_stock(db, product_id, stock)
+
+
+@router.get("/{product_id}/low-stock-check", response_model=ProductResponse)
+def check_for_low_inventory(db: Session = Depends(get_db),
+                            admin: User = Depends(get_current_admin)):
+    """Check for products that are below the minimum stock level. (requires admin authentication)"""
+    return product_service.low_inventory_check(db)

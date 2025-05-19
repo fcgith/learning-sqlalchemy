@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Optional, List
 
 from app.infrastructure.database import Base
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
 from app.models.discount import DiscountResponse
@@ -40,6 +40,7 @@ class Order(Base):
     user = relationship("User", back_populates="orders")
     discount = relationship("Discount", back_populates="orders")
     order_products = relationship("OrderProduct", back_populates="order", cascade="all,delete,delete-orphan")
+    sales = relationship("Sales", back_populates="order", cascade="all,delete,delete-orphan")
 
 
 class OrderProductCreate(BaseModel):

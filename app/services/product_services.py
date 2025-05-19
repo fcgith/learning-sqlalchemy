@@ -1,7 +1,10 @@
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from app.models.product import Product, ProductCreate
+
+from app import config
+from app.config import LOW_PRODUCT_INVENTORY_THRESHOLD
+from app.models.product import Product, ProductCreate, ProductUpdate
 
 
 def get_all_products(db: Session):
@@ -44,25 +47,38 @@ def delete_product(db: Session, product_id: int):
     raise HTTPException(status_code=402, detail="Product not found")
 
 
-def update_product_name(db: Session, product_id: int, name: str):
+def update_product(db: Session, product_id, update: ProductUpdate):
     product = get_product_by_id(db, product_id)
-    try:
-        product.name = name
-        db.commit()
-        db.refresh(product)
-        return product
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error updating product: {e}")
+
+    if update.name is not None:
+        product.name = update.name
+    if update.description is not None:
+        product.description = update.description
+    if update.price is not None:
+        product.price = update.price
+
+    db.commit()
+    db.refresh(product)
+    return product
 
 
-def update_product_price(db: Session, product_id: int, price: float):
+def add_product_stock(db: Session, product_id: int, stock: int):
     product = get_product_by_id(db, product_id)
-    try:
-        product.price = price
-        db.commit()
-        db.refresh(product)
-        return product
-    except SQLAlchemyError as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error updating product: {e}")
+    product.stock += stock
+    db.commit()
+    db.refresh(product)
+    return product
+
+
+def low_inventory_check(db: Session):
+    products = (db.query(Product).filter(
+        or_(
+            and_(Product.low_stock_threshold.is_not(None),
+                 Product.stock <= Product.low_stock_threshold
+                 ),
+            and_(Product.stock <= LOW_PRODUCT_INVENTORY_THRESHOLD)
+        ).all()))
+
+    if products is None:
+        raise HTTPException(status_code=402, detail="There are currently no products with low inventory")
+    return products

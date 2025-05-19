@@ -93,10 +93,10 @@ def update_order(db: Session, order_id: int, order_update: OrderUpdate, user: Us
     if order.status > OrderStatus.PENDING.value:
         raise HTTPException(status_code=400, detail="Order is already paid and cannot be modified")
 
-    for pid in order_update.remove_products:
+    for product_id in order_update.remove_products:
         try:
             product = db.query(OrderProduct).filter(OrderProduct.order_id == order_id,
-                                                    OrderProduct.product_id == pid).first()
+                                                    OrderProduct.product_id == product_id).first()
             order.total_price -= product.total_price
             db.delete(product)
         except:
@@ -108,10 +108,10 @@ def update_order(db: Session, order_id: int, order_update: OrderUpdate, user: Us
         cost = product.price * op.quantity
         if product.discount:
             cost -= product.discount.oercentage * cost
+
         order_product = (db.query(OrderProduct)
                           .filter(OrderProduct.order_id == order.id,OrderProduct.product_id == op.product_id)
                           .first())
-        order_product = order_product
         if order_product:
             order.total_price -= order_product.total_price
         else:
@@ -130,7 +130,7 @@ def delete_order(db: Session, order_id: int, user: User):
     order = check_order_user(db, order_id, user)
     db.delete(order)
     db.commit()
-    return order
+    return True
 
 
 def get_order_products(db: Session, order_id: int, user: User):

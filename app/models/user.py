@@ -19,6 +19,7 @@ class User(Base):
 
     reviews = relationship("Review", back_populates="user", cascade="all,delete,delete-orphan")
     orders = relationship("Order", back_populates="user", cascade="all,delete,delete-orphan")
+    sales = relationship("Sales", back_populates="user", cascade="all,delete,delete-orphan")
 
 
 class Token(BaseModel):
