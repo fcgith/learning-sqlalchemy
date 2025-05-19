@@ -213,3 +213,11 @@ def remove_order_product(db: Session, order_id: int, order_product_id: int, user
     db.commit()
     db.refresh(order)
     return order
+
+
+def advance_order(db: Session, order_id: int, admin: User):
+    order = check_order_user(db, order_id, admin)
+    order.status = OrderStatus.PAID.value
+    db.commit()
+    db.refresh(order)
+    return order

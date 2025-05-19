@@ -3,7 +3,7 @@ import http
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app.dependencies import get_db, get_current_user
+from app.dependencies import get_db, get_current_user, get_current_admin
 from app.models.order import OrderResponse, OrderCreate, OrderUpdate, OrderProductResponse, OrderProductCreate
 from app.models.user import User
 from app.services import order_services
@@ -38,6 +38,14 @@ def update_order(order_id: int,
                  user: User = Depends(get_current_user)):
     """Update an order"""
     return order_services.update_order(db, order_id, order, user)
+
+
+@router.post("/{order_id}/advance", response_model=OrderResponse)
+def advance_order(order_id: int,
+                  db: Session = Depends(get_db),
+                  admin: User = Depends(get_current_admin)):
+    """Advance an order"""
+    return order_services.advance_order(db, order_id, admin)
 
 
 @router.delete("/{order_id}", status_code=http.HTTPStatus.NO_CONTENT.value)
