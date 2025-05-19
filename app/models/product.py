@@ -25,7 +25,7 @@ class Product(Base):
     categories = relationship("Category", secondary=product_categories, back_populates="products")
     discount = relationship("Discount", back_populates="products")
     all_reviews = relationship("Review", back_populates="product")
-    order_products = relationship("OrderProducts", back_populates="product")
+    order_products = relationship("OrderProduct", back_populates="product")
 
 
 class ProductCreate(BaseModel):
