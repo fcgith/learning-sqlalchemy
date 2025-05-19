@@ -78,7 +78,7 @@ class OrderResponse(BaseModel):
     id: int
     user_id: int
     status: int
-    created_at: str
+    created_at: datetime
     order_discount: Optional[int]
     total_price: Optional[float]
     order_products: List["OrderProductResponse"]

@@ -90,7 +90,7 @@ def create_order(db: Session, user_id: int, order: OrderCreate):
 def update_order(db: Session, order_id: int, order_update: OrderUpdate, user: User):
     order = check_order_user(db, order_id, user)
 
-    if order.status > OrderStatus.PENDING:
+    if order.status > OrderStatus.PENDING.value:
         raise HTTPException(status_code=400, detail="Order is already paid and cannot be modified")
 
     for pid in order_update.remove_products:
@@ -102,14 +102,16 @@ def update_order(db: Session, order_id: int, order_update: OrderUpdate, user: Us
         except:
             pass
 
-    for op in order_update.order_products:
+    for op in order_update.new_products:
         product = check_product(db, op.product_id)
 
         cost = product.price * op.quantity
         if product.discount:
             cost -= product.discount.oercentage * cost
-
-        order_product = order.order_products.filter(OrderProduct.product_id == op.product_id).first()
+        order_product = (db.query(OrderProduct)
+                          .filter(OrderProduct.order_id == order.id,OrderProduct.product_id == op.product_id)
+                          .first())
+        order_product = order_product
         if order_product:
             order.total_price -= order_product.total_price
         else:
@@ -133,27 +135,35 @@ def delete_order(db: Session, order_id: int, user: User):
 
 def get_order_products(db: Session, order_id: int, user: User):
     order = check_order_user(db, order_id, user)
-    return [op.product for op in order.order_products]
+    return order.order_products
 
 
 def add_order_product(db: Session, order_id: int, opc: OrderProductCreate, user: User):
     order: Order = check_order_user(db, order_id, user)
-
     product: Product = check_product(db, opc.product_id)
+
     cost = product.price * opc.quantity
     if product.discount:
         cost -= product.discount.percentage * cost
 
-    order_product = OrderProduct(product_id=product.id, quantity=opc.quantity, total_price=cost)
-    order.order_products.append(order_product)
+    order_product = order.order_products.filter(OrderProduct.product_id == opc.product_id).first()
+    if not order_product:
+        OrderProduct(product_id=product.id, quantity=opc.quantity, total_price=cost)
+        order.order_products.append(order_product)
+    else:
+        order_product.quantity += opc.quantity
+        order_product.total_price += cost
+
     order.total_price += cost
-    return order
+    db.commit()
+    db.refresh(order)
+    return order_product
 
 
 def update_order_product(db: Session, order_id: int, order_product_id: int, quantity: int, user: User):
     order_product: OrderProduct = check_order_product(db, order_id, order_product_id, user)
     order = update_order_price(db, order_product.order, order_product.product, quantity)
-    return order
+    return order_product
 
 
 def remove_order_product(db: Session, order_id: int, order_product_id: int, user):
