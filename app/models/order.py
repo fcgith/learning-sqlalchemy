@@ -6,6 +6,7 @@ from app.infrastructure.database import Base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
+from app.models.discount import DiscountResponse
 
 
 class OrderStatus(Enum):
@@ -15,18 +16,16 @@ class OrderStatus(Enum):
     CANCELLED = 3
 
 
-class OrderProducts(Base):
+class OrderProduct(Base):
     __tablename__ = "order_products"
     id = Column(Integer, primary_key=True, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    discount_id = Column(Integer, ForeignKey("discounts.id"), nullable=True)
     quantity = Column(Integer, default=1, nullable=False)
     total_price = Column(Float, default=0, nullable=False)
 
     order = relationship("Order", back_populates="order_products")
     product = relationship("Product", back_populates="order_products")
-    discount = relationship("Discount", back_populates="order_products")
 
 
 class Order(Base):
@@ -40,7 +39,7 @@ class Order(Base):
 
     user = relationship("User", back_populates="orders")
     discount = relationship("Discount", back_populates="orders")
-    order_products = relationship("OrderProducts", back_populates="order", cascade="all,delete,delete-orphan")
+    order_products = relationship("OrderProduct", back_populates="order", cascade="all,delete,delete-orphan")
 
 
 class OrderProductCreate(BaseModel):

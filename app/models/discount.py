@@ -13,12 +13,10 @@ class Discount(Base):
     description = Column(String, default="")
     percentage = Column(Float, default=0, nullable=False)
     min_order_value = Column(Integer, default=0)
-    stackable = Column(Boolean, default=False)
 
     products = relationship("Product", back_populates="discount")
     categories = relationship("Category", back_populates="discount")
     orders = relationship("Order", back_populates="discount")
-    order_products = relationship("OrderProducts", back_populates="discount")
 
 
 class DiscountCreate(BaseModel):
@@ -26,7 +24,6 @@ class DiscountCreate(BaseModel):
     description: Optional[str] = ""
     percentage: float
     min_order_value: Optional[int] = 0
-    stackable: Optional[bool] = False
 
 
 class DiscountUpdate(BaseModel):
@@ -34,7 +31,6 @@ class DiscountUpdate(BaseModel):
     description: Optional[str] = None
     percentage: Optional[float] = None
     min_order_value: Optional[int] = None
-    stackable: Optional[bool] = None
 
 
 class DiscountResponse(BaseModel):
@@ -43,7 +39,6 @@ class DiscountResponse(BaseModel):
     description: str
     percentage: float
     min_order_value: int
-    stackable: bool
 
     class Config:
         from_attributes = True
@@ -55,7 +50,6 @@ class DiscountApplicationResponse(BaseModel):
     description: str
     percentage: float
     min_order_value: int
-    stackable: bool
     products: List["ProductResponse"]
     categories: List["CategoryResponse"]
 
@@ -68,7 +62,6 @@ class DiscountOrdersResponse(BaseModel):
     description: str
     percentage: float
     min_order_value: int
-    stackable: bool
     orders: List["OrderResponse"]
 
     class Config:
