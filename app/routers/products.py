@@ -118,7 +118,7 @@ def add_product_inventory(product_id: int,
     return product_service.add_product_stock(db, product_id, stock)
 
 
-@router.get("/{product_id}/low-stock-check", response_model=ProductResponse)
+@router.get("/{product_id}/low-stock-check", response_model=List[ProductResponse])
 def check_for_low_inventory(db: Session = Depends(get_db),
                             admin: User = Depends(get_current_admin)):
     """Check for products that are below the minimum stock level. (requires admin authentication)"""

@@ -1,0 +1,16 @@
+{
+  "order_products": [
+    {
+      "product_id": 1,
+      "quantity": 511
+    },
+    {
+      "product_id": 3,
+      "quantity": 516
+    },
+    {
+      "product_id": 6,
+      "quantity": 5241
+    }
+  ]
+}

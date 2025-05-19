@@ -4,6 +4,7 @@ from app.routers import auth, categories, reviews, discounts, orders
 from app.routers import users
 from app.routers import products
 from app.routers.support import support
+from app.models import init
 from app.infrastructure.database import Base, engine
 
 Base.metadata.create_all(bind=engine)

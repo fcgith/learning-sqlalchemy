@@ -2,6 +2,8 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
+
+import app.config
 from app import config
 from app.config import LOW_PRODUCT_INVENTORY_THRESHOLD
 from app.models.product import Product, ProductCreate, ProductUpdate
@@ -31,7 +33,12 @@ def find_product_by_name(db: Session, name: str):
 def create_product(db: Session, product: ProductCreate):
     db_product = Product(name=product.name,
                          description=product.description,
-                         price=product.price)
+                         price=product.price,
+                         stock=product.stock)
+
+    if product.low_stock_threshold is not None:
+        db_product.low_stock_threshold = product.low_stock_threshold
+
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
@@ -71,13 +78,15 @@ def add_product_stock(db: Session, product_id: int, stock: int):
 
 
 def low_inventory_check(db: Session):
-    products = (db.query(Product).filter(
+    products = db.query(Product).filter(
         or_(
-            and_(Product.low_stock_threshold.is_not(None),
-                 Product.stock <= Product.low_stock_threshold
-                 ),
-            and_(Product.stock <= LOW_PRODUCT_INVENTORY_THRESHOLD)
-        ).all()))
+            and_(
+                Product.low_stock_threshold.is_not(None),
+                Product.stock <= Product.low_stock_threshold
+            ),
+            Product.stock <= LOW_PRODUCT_INVENTORY_THRESHOLD  # Replace LOW_PRODUCT_INVENTORY_THRESHOLD with actual value
+        )
+    ).all()
 
     if products is None:
         raise HTTPException(status_code=402, detail="There are currently no products with low inventory")

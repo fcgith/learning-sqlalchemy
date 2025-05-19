@@ -52,8 +52,12 @@ def update_user_details(db: Session, user_id: int, user_update: UserUpdate):
 
     if user_update.email is not None:
         user.email = user_update.email
-    if user_update.admin is not None:
-        user.admin = user_update.admin
+    if user_update.phone is not None:
+        user.phone = user_update.phone
+    if user_update.address is not None:
+        user.address = user_update.address
+    if user_update.country is not None:
+        user.country = user_update.country
 
     db.commit()
     db.refresh(user)

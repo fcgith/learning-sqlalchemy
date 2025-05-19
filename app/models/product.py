@@ -35,12 +35,16 @@ class ProductCreate(BaseModel):
     name: str
     description: str
     price: float
+    stock: int = 0
+    low_stock_threshold: Optional[int] = None
 
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
     price: Optional[float] = None
+    stock: Optional[int] = None
+    low_stock_threshold: Optional[int] = None
 
 
 class ProductResponse(BaseModel):
@@ -48,6 +52,8 @@ class ProductResponse(BaseModel):
     name: str
     description: str
     price: float
+    stock: int
+    low_stock_threshold: Optional[int] = None
     discount: Optional["DiscountResponse"] = None
 
     class Config:
